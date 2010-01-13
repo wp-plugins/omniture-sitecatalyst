@@ -3,12 +3,12 @@
 Plugin Name: Omniture - SiteCatalyst
 Plugin URI: http://www.rudishumpert.com/projects/wp-omniture/
 Description: Add Omniture - SiteCatalyst to your blog with settings controlled in the admin section.
-Version: 0.0.1 ALPHA
+Version: 0.0.1.1 ALPHA
 Author: Rudi Shumpert
 Author URI: http://www.rudishumpert.com/
 */
 
-define('omni_version', '0.0.1 ALPHA', true);
+define('omni_version', '0.0.1.1 ALPHA', true);
 
 $omni_options = get_option('omni_admin_options'); 
 
