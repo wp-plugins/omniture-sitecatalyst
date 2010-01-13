@@ -3,12 +3,12 @@
 Plugin Name: Omniture - SiteCatalyst
 Plugin URI: http://www.rudishumpert.com/projects/wp-omniture/
 Description: Add Omniture - SiteCatalyst to your blog with settings controlled in the admin section.
-Version: 0.0.1.1 ALPHA
+Version: 0.0.1.2 ALPHA
 Author: Rudi Shumpert
 Author URI: http://www.rudishumpert.com/
 */
 
-define('omni_version', '0.0.1.1 ALPHA', true);
+define('omni_version', '0.0.1.2 ALPHA', true);
 
 $omni_options = get_option('omni_admin_options'); 
 
@@ -277,7 +277,7 @@ function omni_get_tracker() {
 
       // tracking code to be added to page
   
-  if (!omni_get_option('omni_track_admins')) {
+  if (!omni_get_option('omni_track_admins')  && (current_user_can('manage_options') )) {
        $result='<!-- user not tracked by Omniture-SiteCatalyst plugin v'.omni_version.': http://www.rudishumpert.com/projects/-->';
     } else {
     	 	$result='' .
