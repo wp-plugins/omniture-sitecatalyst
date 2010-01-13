@@ -29,14 +29,14 @@ function omni_get_option($option_name) {
     $omni_default_options['omni_img_script_path']          = 'http://a.analytics.yahoo.com';
     $omni_default_options['omni_domain_list']              = '.yourdomain.com,yourotherdomain.com';
     $omni_default_options['omni_track_loggedin']    	   = 'false' ;   
-    $omni_default_options['omni_sProp_loggedin']           = 's.prop3';
-    $omni_default_options['omni_eVar_loggedin']            = 's.eVar3';
+    $omni_default_options['omni_sProp_loggedin']           = '3';
+    $omni_default_options['omni_eVar_loggedin']            = '3';
 	$omni_default_options['omni_track_internal_search']    = 'false' ; 
-    $omni_default_options['omni_sProp_internal_search']    = 's.prop1';
-    $omni_default_options['omni_eVar_internal_search']     = 's.eVar1';
+    $omni_default_options['omni_sProp_internal_search']    = 's1';
+    $omni_default_options['omni_eVar_internal_search']     = '1';
 	$omni_default_options['omni_track_internal_search_num']= 'false' ; 
-    $omni_default_options['omni_sProp_internal_search_num']= 's.prop2';
-    $omni_default_options['omni_eVar_internal_search_num'] = 's.eVar2';
+    $omni_default_options['omni_sProp_internal_search_num']= '2';
+    $omni_default_options['omni_eVar_internal_search_num'] = '2';
     $omni_default_options['omni_track_admins']    	       = 'false' ;
     $omni_default_options['omni_url_campid']    	       = 'cid' ;      
 
