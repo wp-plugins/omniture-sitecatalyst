@@ -3,14 +3,19 @@
 Plugin Name: Omniture - SiteCatalyst
 Plugin URI: http://www.rudishumpert.com/projects/wp-omniture/
 Description: Add Omniture - SiteCatalyst to your blog with settings controlled in the admin section.
-Version: 0.0.1.2 ALPHA
+Version: 0.0.2
 Author: Rudi Shumpert
 Author URI: http://www.rudishumpert.com/
 */
-
-define('omni_version', '0.0.1.2 ALPHA', true);
+session_start();
+define('omni_version', '0.0.2', true);
 
 $omni_options = get_option('omni_admin_options'); 
+
+function omni_track_comment() {
+	session_start();
+    $_SESSION['omnicommentflag'] = 1;
+}
 
 // set an  SiteCatalyst option in the options table of WordPress
 function omni_set_option($option_name, $option_value) {
@@ -32,13 +37,15 @@ function omni_get_option($option_name) {
     $omni_default_options['omni_sProp_loggedin']           = '3';
     $omni_default_options['omni_eVar_loggedin']            = '3';
 	$omni_default_options['omni_track_internal_search']    = 'false' ; 
-    $omni_default_options['omni_sProp_internal_search']    = 's1';
+    $omni_default_options['omni_sProp_internal_search']    = '1';
     $omni_default_options['omni_eVar_internal_search']     = '1';
 	$omni_default_options['omni_track_internal_search_num']= 'false' ; 
     $omni_default_options['omni_sProp_internal_search_num']= '2';
     $omni_default_options['omni_eVar_internal_search_num'] = '2';
     $omni_default_options['omni_track_admins']    	       = 'false' ;
     $omni_default_options['omni_url_campid']    	       = 'cid' ;      
+	$omni_default_options['omni_track_comments']           = 'false' ; 
+    $omni_default_options['omni_event_comments'] 		   = '1';
 
     add_option('omni_admin_options', $omni_default_options, 
                'Settings for  SiteCatalyst plugin');
@@ -94,6 +101,9 @@ function omni_options() {
     $omni_options['omni_eVar_internal_search_num']   = $_POST['omni_eVar_internal_search_num'];
     $omni_options['omni_track_admins']    	         = $_POST['omni_track_admins']; 
     $omni_options['omni_url_campid']    	         = $_POST['omni_url_campid'];   
+    $omni_options['omni_track_comments']    	     = $_POST['omni_track_comments']; 
+    $omni_options['omni_event_comments']    	     = $_POST['omni_event_comments'];     
+    
     
     update_option('omni_admin_options', $omni_options);
 
@@ -162,6 +172,18 @@ function omni_options() {
           <th nowrap valign="top" width="33%" align="left"><?php _e('Logged In: s.propN', 'omni') ?></th>
           <td><input name="omni_sProp_loggedin" type="text" id="omni_sProp_loggedin" value="<?php echo omni_get_option('omni_sProp_loggedin'); ?>" size="3" />
             <br />Enter the s.prop # that will hold the Logged In Status (NOTE: only enter the # 1 or 2 or 3 etc.)
+          </td>
+        </tr> 
+        <tr>
+          <th nowrap valign="top" width="33%" align="left"><?php _e('Comments ', 'omni') ?></th>
+          <td><input name="omni_track_comments" type="checkbox" id="omni_track_comments" value="true" <?php if (omni_get_option('omni_track_comments')) echo "checked"; ?>  />
+            <br />Enable tracking of logged in status of users
+          </td>
+        </tr>
+        <tr>
+          <th nowrap valign="top" width="33%" align="left"><?php _e('Comments: eventN', 'omni') ?></th>
+          <td><input name="omni_event_comments" type="text" id="omni_event_comments" value="<?php echo omni_get_option('omni_event_comments'); ?>" size="3" />
+            <br />Enter the event # that will hold the Logged In Status (NOTE: only enter the # 1 or 2 or 3 etc.)
           </td>
         </tr> 
       </table>
@@ -260,6 +282,14 @@ function omni_get_tracker() {
    	  $pageType = 'Internal Search';         		
    }
 
+   if (omni_get_option('omni_track_comments') && isset($_SESSION['omnicommentflag']) && $_SESSION['omnicommentflag'] == 1) 
+   	  {
+   	  	$s_event_for_comments = omni_get_option('omni_event_comments');
+   	  	$omni_events = 's.events="event'.$s_event_for_comments.'"' ;
+   	  	$_SESSION['omnicommentflag'] = 0 ;
+   	  } else {
+   	  	$omni_events = '';
+   	  }
  	if (omni_get_option('omni_track_loggedin')) 
    	  {
    	  	  if ( is_user_logged_in() ) {
@@ -295,6 +325,7 @@ function omni_get_tracker() {
 			'.$internal_search_count.'
 			'.$omni_camp.'
 		    '.$omni_loggedin.'
+		    '.$omni_events.'
 
 			/************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
 			var s_code=s.t();if(s_code)document.write(s_code) //omniture variable
@@ -318,5 +349,5 @@ global $omni_footer_hooked;
 $omni_footer_hooked=false;
 add_action('admin_menu', 'omni_admin');
 add_action('wp_footer', 'omni_wp_footer_track');
-
+add_action('comment_post', 'omni_track_comment');
 ?>

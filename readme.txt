@@ -3,7 +3,7 @@ Contributors: Rudi Shumpert
 Tags: Omniture web analytics, statistics, stats, tracking
 Requires at least: 2.8
 Tested up to: 2.9
-Stable: 0.0.1.2
+Stable: 0.0.2
 
 
 This plugin will add tracking features to your wordpress blog without have to know any PHP, 
@@ -28,6 +28,7 @@ Omniture s_code.js file to directory on your web server.
 * Captures number of search results
 * Captures 404 data
 * Ability to track/not track Administrators
+* Ability to set event to track comments and to set event number in admin settings
 
 == Installation ==
 
