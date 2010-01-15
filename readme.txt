@@ -3,7 +3,7 @@ Contributors: Rudi Shumpert
 Tags: Omniture web analytics, statistics, stats, tracking
 Requires at least: 2.8
 Tested up to: 2.9
-Stable: 0.0.2
+Stable: 0.0.2 
 
 
 This plugin will add tracking features to your wordpress blog without have to know any PHP, 
