@@ -3,12 +3,12 @@
 Plugin Name: Omniture - SiteCatalyst
 Plugin URI: http://www.rudishumpert.com/projects/wp-omniture/
 Description: Add Omniture - SiteCatalyst to your blog with settings controlled in the admin section.
-Version: 0.0.0 DEV
+Version: 0.1.0
 Author: Rudi Shumpert
 Author URI: http://www.rudishumpert.com/
 */
 session_start();
-define('omni_version', '0.0.0 DEV', true);
+define('omni_version', '0.1.0', true);
 
 $omni_options = get_option('omni_admin_options'); 
 
@@ -100,6 +100,7 @@ function omni_reporting() {
 
 	$omni_rep_widget_num = omni_get_option('omni_widget_number');
 	$omni_widget_row_max = 3;
+	$omni_db_widget_path = omni_get_option('omni_widget_js_path');
 	
 ?>	
 <div class=wrap>
@@ -107,15 +108,26 @@ function omni_reporting() {
   <table width="100%" cellspacing="2" cellpadding="5" class="editform">
 
 	<tr>
- 		 <th nowrap valign="top" width="100%"  colspan="2">Reporting Widgets</th>
+ 		 <th nowrap valign="top" width="100%"  colspan="3">You many need to login with your normal SiteCatalyst login credentials</th>
     </tr>
- <?php   
- 	for ($test=0; $test<10; $test++)
+    <tr><td colspan="3" height="5">&nbsp;</td></tr>
+ <?php
+ 	$test = 1;   
+ 	for (; ; )
  	 {
  		  echo "<tr>";
- 		  
+ 		  for ($inner_loop=1; $inner_loop<4; $inner_loop++,$test++)
+ 		  {
+ 		  	
+ 		  	echo"<td>";
+ 		  		echo "<script type='text/javascript' src='$omni_db_widget_path'></script>";
+ 		  	echo"</td>";
+ 		  	if ($test == $omni_rep_widget_num) {break;}	
+ 		  }
  		  
  		  echo "</tr>";
+ 		  if ($test == $omni_rep_widget_num) {break;}
+ 		  echo "<tr><td colspan='3' height='5'>&nbsp;</td></tr>";
   	 }
  ?>   
    </table>
@@ -252,7 +264,7 @@ function omni_options() {
         <tr>
           <th nowrap valign="top" width="33%" align="left"><?php _e('# Of Widgets', 'omni') ?></th>
           <td><input name="omni_widget_number" type="text" id="omni_widget_number" value="<?php echo omni_get_option('omni_widget_number'); ?>" size="3" />
-            <br />Enter the # of rows of reporting widgets to include: (Max of 3 rows. 3 widgets per row)
+            <br />Enter the # of rows of reporting widgets to include: (Max of 3 rows. 3 widgets per row).  The Omniture SiteCatalyst Widget can only access reportlets created within SiteCatalyst and saved to a dashboard.
           </td>
         </tr> 
         <tr>

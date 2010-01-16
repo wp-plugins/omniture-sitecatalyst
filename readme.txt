@@ -3,7 +3,7 @@ Contributors: Rudi Shumpert
 Tags: Omniture web analytics, statistics, stats, tracking
 Requires at least: 2.8
 Tested up to: 2.9
-Stable: 0.0.2 
+Stable: 0.1.0 
 
 
 This plugin will add tracking features to your wordpress blog without have to know any PHP, 
@@ -29,6 +29,7 @@ Omniture s_code.js file to directory on your web server.
 * Captures 404 data
 * Ability to track/not track Administrators
 * Ability to set event to track comments and to set event number in admin settings
+* Added Reporting widgets from inside WordPress (Optional)
 
 == Installation ==
 
@@ -46,6 +47,12 @@ Activate Plugin in admin>plugins
 
 View project page for more details
 http://www.rudishumpert.com/projects/wp-omniture/
+
+=What is an Omniture SiteCatalyst Widget=
+
+Omniture has created a SiteCatalyst Widget that allows you to add reportlets from SiteCatalyst Dashboards to your aggregator/portal of choice (iGoogle, My Yahoo, etc…).
+More Info: http://blogs.omniture.com/2008/11/23/sitecatalyst-widgets-inside-omniture-sitecatalyst/
+
 
 == Screenshots ==
 
