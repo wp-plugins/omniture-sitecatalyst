@@ -3,12 +3,12 @@
 Plugin Name: Omniture - SiteCatalyst
 Plugin URI: http://www.rudishumpert.com/projects/wp-omniture/
 Description: Add Omniture - SiteCatalyst to your blog with settings controlled in the admin section.
-Version: 0.0.2
+Version: 0.0.0 DEV
 Author: Rudi Shumpert
 Author URI: http://www.rudishumpert.com/
 */
 session_start();
-define('omni_version', '0.0.2', true);
+define('omni_version', '0.0.0 DEV', true);
 
 $omni_options = get_option('omni_admin_options'); 
 
@@ -46,6 +46,10 @@ function omni_get_option($option_name) {
     $omni_default_options['omni_url_campid']    	       = 'cid' ;      
 	$omni_default_options['omni_track_comments']           = 'false' ; 
     $omni_default_options['omni_event_comments'] 		   = '1';
+    $omni_default_options['omni_enable_widgets'] 		   = 'false';
+    $omni_default_options['omni_widget_js_path'] 		   = 'https://sc.omniture.com/p/widget/current/js/widget.js';
+    $omni_default_options['omni_enable_dashboard_widget']  = 'false';
+    $omni_default_options['omni_widget_number']            = '3';
 
     add_option('omni_admin_options', $omni_default_options, 
                'Settings for  SiteCatalyst plugin');
@@ -58,6 +62,25 @@ function omni_get_option($option_name) {
   return $result;
 }
 
+// Create the function to output the contents of our Dashboard Widget
+
+function omni_dashboard_widget_function() {
+	// Display whatever it is you want to show
+	$omni_db_widget_path = omni_get_option('omni_widget_js_path');
+	echo "<script type='text/javascript' src='$omni_db_widget_path'></script>";
+} 
+
+// Create the function use in the action hook
+
+function omni_add_dashboard_widgets() {
+	wp_add_dashboard_widget('omni_dashboard_widget', 'Omniture-SiteCatalyst', 'omni_dashboard_widget_function');	
+} 
+
+// Hook into the 'wp_dashboard_setup' action to register our other functions
+if (omni_get_option('omni_enable_dashboard_widget')) { 
+	add_action('wp_dashboard_setup', 'omni_add_dashboard_widgets' );
+}
+
 function omni_admin() {
 
   if (function_exists('add_options_page')) {
@@ -67,8 +90,39 @@ function omni_admin() {
                      basename(__FILE__) /* php file */ , 
                      'omni_options' /* function for subpanel */);
   }
+ if (omni_get_option('omni_enable_widgets'))
+ 	 { 
+ 	 add_submenu_page('index.php',  __('Omniture', 'omniture-sitecatalyst'),  __('Omniture', 'omniture-sitecatalyst'), 1, 'omniture-sitecatalyst/omniture.php', 'omni_reporting');		 	 
+ 	 }
 
 }
+function omni_reporting() {
+
+	$omni_rep_widget_num = omni_get_option('omni_widget_number');
+	$omni_widget_row_max = 3;
+	
+?>	
+<div class=wrap>
+<h2>Omniture - SiteCatalyst - Reporting</h2>
+  <table width="100%" cellspacing="2" cellpadding="5" class="editform">
+
+	<tr>
+ 		 <th nowrap valign="top" width="100%"  colspan="2">Reporting Widgets</th>
+    </tr>
+ <?php   
+ 	for ($test=0; $test<10; $test++)
+ 	 {
+ 		  echo "<tr>";
+ 		  
+ 		  
+ 		  echo "</tr>";
+  	 }
+ ?>   
+   </table>
+</div>   
+<?php
+}
+
 
 function omni_options() {
   if (isset($_POST['advanced_options'])) {
@@ -103,7 +157,10 @@ function omni_options() {
     $omni_options['omni_url_campid']    	         = $_POST['omni_url_campid'];   
     $omni_options['omni_track_comments']    	     = $_POST['omni_track_comments']; 
     $omni_options['omni_event_comments']    	     = $_POST['omni_event_comments'];     
-    
+    $omni_options['omni_enable_widgets'] 		     = $_POST['omni_enable_widgets']; 
+    $omni_options['omni_widget_js_path'] 		     = $_POST['omni_widget_js_path']; 
+    $omni_options['omni_enable_dashboard_widget']    = $_POST['omni_enable_dashboard_widget']; 
+    $omni_options['omni_widget_number']              = $_POST['omni_widget_number'];   
     
     update_option('omni_admin_options', $omni_options);
 
@@ -177,15 +234,39 @@ function omni_options() {
         <tr>
           <th nowrap valign="top" width="33%" align="left"><?php _e('Comments ', 'omni') ?></th>
           <td><input name="omni_track_comments" type="checkbox" id="omni_track_comments" value="true" <?php if (omni_get_option('omni_track_comments')) echo "checked"; ?>  />
-            <br />Enable tracking of logged in status of users
+            <br />Enable tracking of comments to post in an event
           </td>
         </tr>
         <tr>
           <th nowrap valign="top" width="33%" align="left"><?php _e('Comments: eventN', 'omni') ?></th>
           <td><input name="omni_event_comments" type="text" id="omni_event_comments" value="<?php echo omni_get_option('omni_event_comments'); ?>" size="3" />
-            <br />Enter the event # that will hold the Logged In Status (NOTE: only enter the # 1 or 2 or 3 etc.)
+            <br />Enter the event # that will capture the comment event(NOTE: only enter the # 1 or 2 or 3 etc.)
           </td>
         </tr> 
+        <tr>
+          <th nowrap valign="top" width="33%" align="left"><?php _e('Enabled Reporting Widgets ', 'omni') ?></th>
+          <td><input name="omni_enable_widgets" type="checkbox" id="omni_enable_widgets" value="true" <?php if (omni_get_option('omni_enable_widgets')) echo "checked"; ?>  />
+            <br />Enable Reporting Widgets
+          </td>
+        </tr>
+        <tr>
+          <th nowrap valign="top" width="33%" align="left"><?php _e('# Of Widgets', 'omni') ?></th>
+          <td><input name="omni_widget_number" type="text" id="omni_widget_number" value="<?php echo omni_get_option('omni_widget_number'); ?>" size="3" />
+            <br />Enter the # of rows of reporting widgets to include: (Max of 3 rows. 3 widgets per row)
+          </td>
+        </tr> 
+        <tr>
+          <th nowrap valign="top" width="33%" align="left"><?php _e('JS Widget Path', 'omni') ?></th>
+          <td><input name="omni_widget_js_path" type="text" id="omni_widget_js_path" value="<?php echo omni_get_option('omni_widget_js_path'); ?>" size="100" />
+            <br />Enter the path to the SiteCatalyst Widget file (ie. https://sc.omniture.com/p/widget/current/js/widget.js ).
+          </td>
+        </tr>
+        <tr>
+          <th nowrap valign="top" width="33%" align="left"><?php _e('Add Widget To Dashboard ', 'omni') ?></th>
+          <td><input name="omni_enable_dashboard_widget" type="checkbox" id="omni_enable_dashboard_widget" value="true" <?php if (omni_get_option('omni_enable_dashboard_widget')) echo "checked"; ?>  />
+            <br />Enable (1) Reporting Widget in WordPress Dashboard
+          </td>
+        </tr>
       </table>
     </fieldset>
   
